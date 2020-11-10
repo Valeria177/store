@@ -1,4 +1,6 @@
-﻿namespace Store
+﻿using System;
+
+namespace Store
 {
     public class Detail
     {
