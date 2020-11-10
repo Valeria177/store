@@ -4,7 +4,8 @@ using System.Text;
 
 namespace Store
 {
-    interface IDetailRepository
+    public interface IDetailRepository
     {
+        Detail[] GetAllByTitle(string titlePart);
     }
 }
