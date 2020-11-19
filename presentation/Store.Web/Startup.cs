@@ -26,6 +26,7 @@ namespace Store.Web
         {
             services.AddControllersWithViews();
             services.AddSingleton<IDetailRepository, DetailRepository>();
+            services.AddSingleton<DetailService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

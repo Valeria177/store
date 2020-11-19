@@ -7,15 +7,24 @@ namespace Store.Memory
     {
         private readonly Detail[] details = new[]
         {
-            new Detail(1, "Ремонтный к-т направляющей суппорта"),
-            new Detail(2, "Диск тормозной задний"),
-            new Detail(3, "Колодки дисковые"),
+            new Detail(1,"058133843","Россия", "Фильтр воздушный"),
+            new Detail(2, "028127435B", "Россия","Фильтр топливный"),
+            new Detail(3, "8E0698451L","Россия" ,"Колодки тормозные"),
+            new Detail(4,"N10140105","Китай", "Свеча накаливания"),
+            new Detail(5, "71769481", "Россия","Тормозной диск, задний"),
+            new Detail(6, "46423415","Россия" ,"Тормозной диск, передний"),
         };
 
-        public Detail[] GetAllByTitle(string titlePart)
+        public Detail[] GetAllByPart_number(string part_number)
         {
-            return details.Where(detail => detail.Title.Contains(titlePart)).ToArray();
+            return details.Where(detail => detail.Part_number == part_number).ToArray();
+        }
+
+        public Detail[] GetAllByTitleOrCompany(string query)
+        {
+            return details.Where(detail => detail.Title.Contains(query)||detail.Company.Contains(query)).ToArray();
 
         }
+
     }
 }
