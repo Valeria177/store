@@ -13,12 +13,18 @@ namespace Store
 
         public string Title { get; }
 
-        public Detail(int id, string part_number, string company, string title)
+        public string Description { get; }
+
+        public decimal Price { get; }
+
+        public Detail(int id, string part_number, string company, string title, string description, decimal price)
         {
             Id = id;
             Part_number = part_number;
             Company = company;
             Title = title;
+            Description = description;
+            Price = price;
         }
 
         internal static bool IsPart_number(string s)

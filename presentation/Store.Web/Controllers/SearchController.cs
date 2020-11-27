@@ -19,7 +19,7 @@ namespace Store.Web.Controllers
         {
             var details = detailService.GetAllByQuery(querty);
 
-            return View(details);
+            return View("Index", details);
         }
     }
 }

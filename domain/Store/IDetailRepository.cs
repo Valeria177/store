@@ -9,5 +9,6 @@ namespace Store
 
         Detail[] GetAllByPart_number(string part_number);
         Detail[] GetAllByTitleOrCompany(string titleOrCompany);
+        Detail GetById(int id);
     }
 }
