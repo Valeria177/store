@@ -13,10 +13,10 @@ namespace Store.Tests
         {
             var detailRepositoryStub = new Mock<IDetailRepository>();
             detailRepositoryStub.Setup(x => x.GetAllByPart_number(It.IsAny<string>())).Returns
-                (new[] { new Detail(1, "", "", "") });
+                (new[] { new Detail(1, "", "", "","",0m) });
 
             detailRepositoryStub.Setup(x => x.GetAllByTitleOrCompany(It.IsAny<string>())).Returns
-                (new[] { new Detail(2, "", "", "") });
+                (new[] { new Detail(2, "", "", "","",0m) });
 
             var detailService = new DetailService(detailRepositoryStub.Object);
             var validPart_number = "789456123";
@@ -31,10 +31,10 @@ namespace Store.Tests
         {
             var detailRepositoryStub = new Mock<IDetailRepository>();
             detailRepositoryStub.Setup(x => x.GetAllByPart_number(It.IsAny<string>())).Returns
-                (new[] { new Detail(1, "", "", "") });
+                (new[] { new Detail(1, "", "", "","",0m) });
 
             detailRepositoryStub.Setup(x => x.GetAllByTitleOrCompany(It.IsAny<string>())).Returns
-                (new[] { new Detail(2, "", "", "") });
+                (new[] { new Detail(2, "", "", "","",0m) });
 
             var detailService = new DetailService(detailRepositoryStub.Object);
             var invalidPart_number = "диск";
