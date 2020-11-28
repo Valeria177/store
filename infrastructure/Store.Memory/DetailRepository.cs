@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Store.Memory
@@ -20,6 +21,15 @@ namespace Store.Memory
             new Detail(11, "7GH1769481", "Китай","Датчик масла", "добавить описание",250m),
             new Detail(12, "4642XC3415","Китай" ,"Фильтр масляный","добавить описание",340m),
         };
+
+        public Detail[] GetAllByIds(IEnumerable<int> detailIds)
+        {
+            var foundDetails = from detail in details
+                               join detailId in detailIds on detail.Id equals detailId
+                               select detail;
+
+            return foundDetails.ToArray();
+        }
 
         public Detail[] GetAllByPart_number(string part_number)
         {
