@@ -31,6 +31,7 @@ namespace Store.Web
 
 
             services.AddSingleton<IDetailRepository, DetailRepository>();
+            services.AddSingleton<IOrderRepository, OrderRepository>();
             services.AddSingleton<DetailService>();
         }
 
