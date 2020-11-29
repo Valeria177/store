@@ -14,15 +14,10 @@ namespace Store
             get { return items; }
         }
 
-        public int TotalCount
-        {
-            get { return items.Sum(item => item.Count); }
-        }
+        public int TotalCount => items.Sum(item => item.Count); 
 
-        public decimal TotalPrice
-        {
-            get { return items.Sum(item => item.Price * item.Count); }
-        }
+        public decimal TotalPrice => items.Sum(item => item.Price * item.Count);
+       
 
         public Order(int id, IEnumerable<OrderItem> items)
         {
@@ -36,23 +31,53 @@ namespace Store
             this.items = new List<OrderItem>(items);
         }
 
-        public void AddItem(Detail detail, int count)
+        public OrderItem GetItem(int detailId)
+        {
+            int index = items.FindIndex(item => item.DetailId == detailId);
+
+            if (index == -1)
+               ThrowDetailException ("Деталь не найдена", detailId);
+            return items[index];
+
+        }
+
+
+        public void AddOrUpdateItem(Detail detail, int count)
         {
             if (detail == null)
                 throw new ArgumentNullException(nameof(detail));
 
-            var item = items.SingleOrDefault(x => x.DetailId == detail.Id);
-
-            if (item == null)
+            int index = items.FindIndex(item => item.DetailId == detail.Id);
+            if (index == -1)
             {
                 items.Add(new OrderItem(detail.Id, count, detail.Price));
             }
             else
-            {
-                items.Remove(item);
-                items.Add(new OrderItem(detail.Id, item.Count + count, detail.Price));
-            }
+                items[index].Count += count;
+        }
 
+        public void RemoveItem(int detailId)
+        {
+            int index = items.FindIndex(item => item.DetailId == detailId);
+
+            if (index == -1)
+                ThrowDetailException("Order does not contain specified item", detailId);
+
+
+            items.RemoveAt(index);
+        }
+
+        public void AddItem(Detail detail, int v)
+        {
+            throw new NotImplementedException(); 
+        }
+
+        private void ThrowDetailException(string message, int detailId)
+        {
+            var exception = new InvalidOperationException(message);
+            exception.Data["DetailId"] = detailId;
+
+            throw exception;
         }
     }
 }
