@@ -8,18 +8,34 @@ namespace Store
     {
         public int DetailId { get; }
 
-        public int Count { get; }
+
+        private int count;
+        public int Count
+        { 
+            get { return count; }
+            set 
+            {
+                ThrowIFInvalidCount(value);
+
+                count = value;
+            }
+        }
 
         public decimal Price { get; }
 
         public OrderItem(int detailId, int count, decimal price)
         {
-            if (count <= 0)
-                throw new ArgumentOutOfRangeException("Count не может быть меньше 0 ");
+            ThrowIFInvalidCount(count);
 
             DetailId = detailId;
             Count = count;
             Price = price;
+        }
+
+        private static void ThrowIFInvalidCount(int count)
+        {
+            if (count <= 0)
+                throw new ArgumentOutOfRangeException("Count не может быть меньше 0 ");
         }
     }
 }
