@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.Eventing.Reader;
 using System.Linq;
+using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Store.Messages;
 using Store.Web.Models;
 
 namespace Store.Web.Controllers
@@ -10,20 +14,23 @@ namespace Store.Web.Controllers
     {
         private readonly IDetailRepository detailRepository;
         private readonly IOrderRepository orderRepository;
+        private readonly INotificationService notificationService;
 
-        public OrderController(IDetailRepository detailRepository, IOrderRepository orderRepository)
+        public OrderController(IDetailRepository detailRepository, IOrderRepository orderRepository, INotificationService notificationService)
         {
             this.detailRepository = detailRepository;
             this.orderRepository = orderRepository;
+            this.notificationService = notificationService;
         }
 
+        [HttpGet]
         public IActionResult Index()
         {
 
             if (HttpContext.Session.TryGetCart(out Cart cart))
             {
-               var order = orderRepository.GetById(cart.OrderId);
-               OrderModel model = Map(order);
+                var order = orderRepository.GetById(cart.OrderId);
+                OrderModel model = Map(order);
 
                 return View(model);
 
@@ -55,6 +62,7 @@ namespace Store.Web.Controllers
             };
         }
 
+        [HttpPost]
         public IActionResult AddItem(int detailId, int count = 1)
         {
             (Order order, Cart cart) = GetOrCreateOrderAndCart();
@@ -65,21 +73,21 @@ namespace Store.Web.Controllers
 
             SaveOrderAndCart(order, cart);
 
-            return RedirectToAction("Index", "Detail", new {id = detailId });
+            return RedirectToAction("Index", "Detail", new { id = detailId });
         }
         [HttpPost]
         public IActionResult UpdateItem(int detailId, int count)
         {
             (Order order, Cart cart) = GetOrCreateOrderAndCart();
 
-            order.GetItem(detailId).Count =count;
+            order.GetItem(detailId).Count = count;
 
             SaveOrderAndCart(order, cart);
 
-            return RedirectToAction("Index", "Detail", new { detailId });
+            return RedirectToAction("Index", "Order");
         }
 
-       
+
 
         private (Order order, Cart cart) GetOrCreateOrderAndCart()
         {
@@ -106,16 +114,92 @@ namespace Store.Web.Controllers
             HttpContext.Session.Set(cart);
         }
 
-        public IActionResult RemoveItem(int id)
+        [HttpPost]
+        public IActionResult RemoveItem(int detailId)
         {
             (Order order, Cart cart) = GetOrCreateOrderAndCart();
 
-            order.RemoveItem(id);
+            order.RemoveItem(detailId);
 
             SaveOrderAndCart(order, cart);
 
 
-            return RedirectToAction("Index", "Detail", new { id });
+            return RedirectToAction("Index", "Order");
         }
+
+        [HttpPost]
+        public IActionResult SendConfirmationCode(int id, string cellPhone)
+        {
+            var order = orderRepository.GetById(id);
+            var model = Map(order);
+
+            if (!IsValidCellPhone(cellPhone))
+            {
+                model.Errors["cellPhone"] = "Номер телефона не соответствует формату +79876543210";
+                return View("Index", model);
+            }
+
+            int code = 1111; // random.Next(1000, 10000)
+            HttpContext.Session.SetInt32(cellPhone, code);
+            notificationService.SendConfirmationCode(cellPhone, code);
+
+            return View("Confirmation",
+                new ConfirmationModel
+                {
+                    OrderId = id,
+                    CellPhone = cellPhone
+                }); 
+        }
+
+        private bool IsValidCellPhone(string cellPhone)
+        {
+            if (cellPhone == null)
+                return false;
+
+            cellPhone = cellPhone.Replace(" ", "")
+                                 .Replace("-", "");
+
+            return Regex.IsMatch(cellPhone, @"^\+?\d{11}$");
+        }
+
+          [HttpPost]
+        public IActionResult StartDelivery(int id, string cellPhone, int code)
+        {
+            int? storedCode = HttpContext.Session.GetInt32(cellPhone);
+            if (storedCode == null)
+            {
+                return View("Confirmation",
+                            new ConfirmationModel
+                            {
+                                OrderId = id,
+                                CellPhone = cellPhone,
+                                Errors = new Dictionary<string, string>
+                                {
+                                    { "code", "Пустой код, повторите отправку" }
+                                },
+                            }); 
+            }
+
+            if (storedCode != code)
+            {
+                return View("Confirmation",
+                            new ConfirmationModel
+                            {
+                                OrderId = id,
+                                CellPhone = cellPhone,
+                                Errors = new Dictionary<string, string>
+                                {
+                                    { "code", "Отличается от отправленного" }
+                                },
+                            }); 
+            }
+
+            //
+
+            return View();
+
+        }
+
+        
     }
 }
