@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Store.Contractors;
 using Store.Messages;
+using Store.Web.Contractors;
 using Store.Web.Models;
 
 namespace Store.Web.Controllers
@@ -17,18 +18,21 @@ namespace Store.Web.Controllers
         private readonly IOrderRepository orderRepository;
         private readonly IEnumerable<IDeliveryService> deliveryServices;
         private readonly IEnumerable<IPaymentService> paymentServices;
+        private readonly IEnumerable<IWebContractorsService> webContractorsServices;
         private readonly INotificationService notificationService;
 
         public OrderController(IDetailRepository detailRepository,
             IOrderRepository orderRepository,
             IEnumerable<IDeliveryService> deliveryServices,
             IEnumerable<IPaymentService> paymentServices,
+            IEnumerable<IWebContractorsService> webContractorsServices,
             INotificationService notificationService)
         {
             this.detailRepository = detailRepository;
             this.orderRepository = orderRepository;
             this.deliveryServices = deliveryServices;
             this.paymentServices = paymentServices;
+            this.webContractorsServices = webContractorsServices;
             this.notificationService = notificationService;
         }
 
@@ -262,7 +266,15 @@ namespace Store.Web.Controllers
 
             var order = orderRepository.GetById(id);
 
+
+
             var form = paymentService.CreateForm(order);
+
+            var webContractorsService = webContractorsServices.SingleOrDefault(service => service.UniqueCode == uniqueCode);
+
+            if (webContractorsService != null)
+                return Redirect(webContractorsService.GetUri);
+            
 
             return View("PaymentStep", form);
         }
@@ -284,6 +296,11 @@ namespace Store.Web.Controllers
             }
 
             return View("PaymentStep", form);
+        }
+
+        public IActionResult Finish()
+        {
+            return View();
         }
     }
 }
