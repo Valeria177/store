@@ -19,7 +19,7 @@ namespace Store.Tests
                 (new[] { new Detail(2, "", "", "","",0m) });
 
             var detailService = new DetailService(detailRepositoryStub.Object);
-            var validPart_number = "789456123";
+            var validPart_number = "058143843";
 
             var actual = detailService.GetAllByQuery(validPart_number);
 

@@ -300,6 +300,8 @@ namespace Store.Web.Controllers
 
         public IActionResult Finish()
         {
+            HttpContext.Session.RemoveCart();
+
             return View();
         }
     }
