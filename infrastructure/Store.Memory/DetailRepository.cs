@@ -8,9 +8,9 @@ namespace Store.Memory
     {
         private readonly Detail[] details = new[]
         {
-            new Detail(1,"058143843","Россия", "Фильтр воздушный", "апрол", 200m),
+            new Detail(1,"058143843","Россия", "Фильтр воздушный", "FORD Focus (1.4/2.0) (04-) VOLVO C30, S40, V50 (1.6/2.0) (04-) OE 1232496", 200m),
             new Detail(2, "028127435B", "Россия","Фильтр топливный MANNFILTER WK 69/2", "Подходит для: Audi A3, Audi TTS, Audi TT, BMW 1 series, Seat Leon, Seat Ibiza, Seat Toledo, Seat Cordoba, Seat Altea, Skoda Rapid, Skoda Praktik, Skoda Octavia, Skoda Fabia, Skoda Roomster, Volkswagen Caddy, Volkswagen Jetta,Volkswagen Golf, Volkswagen Beetle, Volkswagen Eos, Volkswagen Touran, Volkswagen Polo", 1250m),
-            new Detail(3, "8E0698451L","Россия" ,"Колодки тормозные", "добавить описание", 600m),
+            new Detail(3, "8E0698451L","Россия" ,"Колодки тормозные передние", "brembo P85075 для Volkswagen, Skoda, Audi, SEAT (4 шт.)", 600m),
             new Detail(4,"N10140105","Китай", "Свеча накаливания", "добавить описание", 340m),
             new Detail(5, "717469481", "Россия","Тормозной диск, задний", "добавить описание", 1040m),
             new Detail(6, "4642343415","Россия" ,"Тормозной диск, передний", "добавить описание",1040m),
