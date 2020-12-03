@@ -82,7 +82,12 @@ namespace Store.Web.Controllers
 
             var detail = detailRepository.GetById(detailId);
 
-            order.AddOrUpdateItem(detail, count);
+            if (order.Items.TryGet(detailId, out OrderItem orderItem))
+                orderItem.Count += count;
+
+            else 
+                order.Items.Add(detail.Id, detail.Price, count);
+
 
             SaveOrderAndCart(order, cart);
 
@@ -93,7 +98,7 @@ namespace Store.Web.Controllers
         {
             (Order order, Cart cart) = GetOrCreateOrderAndCart();
 
-            order.GetItem(detailId).Count = count;
+            order.Items.Get(detailId).Count = count;
 
             SaveOrderAndCart(order, cart);
 
@@ -132,7 +137,7 @@ namespace Store.Web.Controllers
         {
             (Order order, Cart cart) = GetOrCreateOrderAndCart();
 
-            order.RemoveItem(detailId);
+            order.Items.Remove(detailId);
 
             SaveOrderAndCart(order, cart);
 
