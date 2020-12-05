@@ -31,8 +31,7 @@ namespace Store
         {
             if (s == null)
                 return false;
-
-            s = s.Replace("-", "").Replace(" ", "").ToUpper();
+            //s = s.Replace(" ", "").Replace("-", "");
 
             return Regex.IsMatch(s, "\\d{9}");
         }
