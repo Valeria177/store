@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Store
+namespace Store.Web.App
 {
     public class DetailService
     {
