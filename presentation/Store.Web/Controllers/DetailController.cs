@@ -10,17 +10,17 @@ namespace Store.Web.Controllers
 
     public class DetailController : Controller
     {
-        private readonly IDetailRepository detailRepository;
+        private readonly DetailService detailService;
 
-        public DetailController(IDetailRepository detailRepository)
+        public DetailController(DetailService detailService)
         {
-            this.detailRepository = detailRepository;
+            this.detailService = detailService;
         }
         public IActionResult Index(int id)
         {
 
-            Detail detail = detailRepository.GetById(id);
-            return View(detail);
+            var model = detailService.GetById(id);
+            return View(model);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿@model Detail
+﻿@model DetailModel
 
 @{
     ViewData["Title"] = Model.Title;
@@ -8,7 +8,7 @@
 <p><strong>@Model.Company</strong></p>
 <p>@Model.Description</p>
 <p>Цена <strong>@Model.Price</strong></p>
-<form action="@Url.Action("AddItem", "Order")" method="post">
+<form action="@Url.Action(nameof(Store.Web.Controllers.OrderController.AddItem), "Order")" method="post">
     <input type="hidden" name="detailId" value="@Model.Id" />
     <button class="bth btn-success" type="submit">В корзину</button>
 </form>

@@ -27,7 +27,7 @@ namespace Store
             Price = price;
         }
 
-        internal static bool IsPart_number(string s)
+        public static bool IsPart_number(string s)
         {
             if (s == null)
                 return false;

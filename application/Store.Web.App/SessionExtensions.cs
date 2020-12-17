@@ -9,6 +9,11 @@ namespace Store.Web
     {
         private const string key = "Cart";
 
+        public static void RemoveCart(this ISession session)
+        {
+            session.Remove(key);
+        }
+
         
         public static void Set(this ISession session, Cart value)
         {
@@ -41,11 +46,8 @@ namespace Store.Web
                     var totalCount = reader.ReadInt32();
                     var totalPrice = reader.ReadDecimal();
 
-                    value = new Cart(orderId)
-                    {
-                        TotalCount = totalCount,
-                        TotalPrice = totalPrice,
-                    };
+                    value = new Cart(orderId, totalCount, totalPrice);
+                    
 
                     return true;
                 }
