@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Store.Data;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Xunit;
@@ -11,15 +12,25 @@ namespace Store.Tests
         [Fact]
         public void TotalCount_WithEmptyItems_ReturnZero()
         {
-            var order = new Order(1, new OrderItem[0]);
+            var order = CreateEmptyTestOrder();
             Assert.Equal(0, order.TotalCount);
 
         }
 
+        private static Order CreateEmptyTestOrder()
+        {
+            return new Order(new OrderDTO
+            {
+                Id = 1,
+                Items = new OrderItemDTO[0]
+            });
+        }
+
+
         [Fact]
         public void TotalPrice_WithEmptyItems_ReturnZero()
         {
-            var order = new Order(1, new OrderItem[0]);
+            var order = CreateEmptyTestOrder();
             Assert.Equal(0m, order.TotalCount);
 
         }
@@ -27,25 +38,28 @@ namespace Store.Tests
         [Fact]
         public void TotalCount_WithNonEmptyItems_CalcualtesTotalCount()
         {
-            var order = new Order(1, new[]
-            {
-                new OrderItem(1, 10m, 3),
-                new OrderItem(2, 100m, 5),
-
-            });
+            var order = CreateTestOrder();
             Assert.Equal(3 + 5, order.TotalCount);
         }
 
+        private static Order CreateTestOrder()
+        {
+            return new Order(new OrderDTO
+            {
+                Id = 1,
+                Items = new[]
+                {
+                    new OrderItemDTO { DetailId = 1, Price = 10m, Count = 3},
+                    new OrderItemDTO { DetailId = 2, Price = 100m, Count = 5},
+                }
+            });
+        }
 
-        [Fact]
+
+                [Fact]
         public void TotalPrice_WithNonEmptyItems_CalcualtesTotalPrice()
         {
-            var order = new Order(1, new[]
-            {
-                new OrderItem(1, 10m, 3),
-                new OrderItem(2, 100m, 5),
-
-            });
+            var order = CreateTestOrder();
             Assert.Equal(3 * 10m + 5*100m, order.TotalPrice);
         }
 
