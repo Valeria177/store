@@ -87,7 +87,7 @@ namespace Store
             public static OrderDTO Create() => new OrderDTO();
         }
 
-        public static class Maper
+        public static class Mapper
         {
             public static Order Map(OrderDTO dto) => new Order(dto);
 

@@ -19,7 +19,8 @@ namespace Store.Data.EF
                ServiceLifetime.Transient
            );
 
-
+            services.AddScoped<Dictionary<Type, StoreDbContext>>();
+            services.AddSingleton<DbContextFactory>();
             services.AddSingleton<IDetailRepository, DetailRepository>();
             services.AddSingleton<IOrderRepository, OrderRepository>();
 

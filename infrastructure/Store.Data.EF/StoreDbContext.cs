@@ -16,9 +16,7 @@ namespace Store.Data.EF
 
         public StoreDbContext(DbContextOptions<StoreDbContext> options)
             : base(options)
-        {
-
-        }
+        {  }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
