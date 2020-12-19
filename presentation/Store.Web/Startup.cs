@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Store.Contractors;
+using Store.Data.EF;
 using Store.Messages;
 using Store.Web.App;
 using Store.Web.Contractors;
@@ -35,6 +36,8 @@ namespace Store.Web
                 options.Cookie.IsEssential = true;
             });
 
+
+            services.AddEfRepositories(Configuration.GetConnectionString("Store"));
 
             services.AddSingleton<INotificationService, DebugNotificationService>();
             services.AddSingleton<IDeliveryService, PostamateDeliveryService>();
