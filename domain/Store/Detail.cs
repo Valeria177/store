@@ -1,40 +1,111 @@
-﻿using System;
+﻿using Store.Data;
+using System;
 using System.Text.RegularExpressions;
 
 namespace Store
 {
     public class Detail
     {
-        public int Id { get; }
+        private readonly DetailDTO dto;
 
-        public string Part_number { get; }
+        public int Id => dto.Id;
 
-        public string Company { get; }
-
-        public string Title { get; }
-
-        public string Description { get; }
-
-        public decimal Price { get; }
-
-        public Detail(int id, string part_number, string company, string title, string description, decimal price)
+        public string Part_number
         {
-            Id = id;
-            Part_number = part_number;
-            Company = company;
-            Title = title;
-            Description = description;
-            Price = price;
+            get => dto.Part_number;
+            set
+            {
+                if (TryFormatPart_number(value, out string formattedPart_number))
+                    dto.Part_number = formattedPart_number;
+
+                throw new ArgumentException(nameof(Part_number));
+            }
         }
 
-        public static bool IsPart_number(string s)
+        public string Company
         {
-            if (s == null)
+            get => dto.Company;
+            set => dto.Company = value?.Trim();
+        }
+
+        public string Title 
+        {
+            get => dto.Title;
+            set
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                    throw new ArgumentException(nameof(Title));
+            }
+        }
+
+        public string Description
+        {
+            get => dto.Description;
+            set => dto.Description = value;
+        }
+
+        public decimal Price 
+        {
+            get => dto.Price;
+            set => dto.Price = value;
+        }
+
+       internal Detail(DetailDTO dto)
+        {
+            this.dto = dto;
+        }
+
+        public static bool TryFormatPart_number(string part_number, out string formattedPart_number)
+        {
+            if (part_number == null)
+            {
+                formattedPart_number = null;
                 return false;
+            }
 
-            s = s.Replace("-", "").Replace(" ", "").ToUpper();
+            formattedPart_number = part_number.Replace("-", "")
+                                .Replace(" ", "");
 
-            return Regex.IsMatch(s, "\\d{9}");
+            return Regex.IsMatch(formattedPart_number, "\\d{9}");
         }
+
+        public static bool IsPart_number(string part_number)
+            => TryFormatPart_number(part_number, out _);
+
+        public static class DtoFactory
+        {
+            public static DetailDTO Create(string part_number, 
+                                            string company,
+                                            string  title,
+                                            string description,
+                                            decimal price)
+            {
+                if (TryFormatPart_number(part_number, out string formattedPart_number))
+                    part_number = formattedPart_number;
+                else
+                    throw new ArgumentException(nameof(part_number));
+
+                if (string.IsNullOrWhiteSpace(title))
+                    throw new ArgumentException(nameof(title));
+
+                return new DetailDTO
+                {
+                    Part_number = part_number,
+                    Company = company?.Trim(),
+                    Title = title.Trim(),
+                    Description = description?.Trim(),
+                    Price = price,
+                };
+            }
+                                            
+        }
+
+        public static class Mapper
+        {
+            public static Detail Map(DetailDTO dto) => new Detail(dto);
+
+            public static DetailDTO Map(Detail domain) => domain.dto;
+        }
+
     }
 }

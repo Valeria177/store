@@ -1,20 +1,28 @@
-﻿using System;
+﻿using Store.Data;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Store
 {
     public class OrderItemCollection : IReadOnlyCollection<OrderItem>
     {
+
+        private readonly OrderDTO orderDTO;
         public readonly List<OrderItem> items;
 
-        public OrderItemCollection(IEnumerable<OrderItem> items)
+        public OrderItemCollection(OrderDTO orderDTO)
         {
-            if (items == null)
-                throw new ArgumentException(nameof(items));
-            this.items = new List<OrderItem>(items);
+            if (orderDTO == null)
+                throw new ArgumentNullException(nameof(orderDTO));
 
+            this.orderDTO = orderDTO;
+
+            items = orderDTO.Items
+                            .Select(OrderItem.Mapper.Map)
+                            .ToList();
         }
 
         public int Count => items.Count;
@@ -38,7 +46,7 @@ namespace Store
             throw new InvalidOperationException("Detail not found");
 
         }
-        
+
         public bool TryGet(int detailId, out OrderItem orderItem)
         {
             var index = items.FindIndex(item => item.DetailId == detailId);
@@ -55,9 +63,11 @@ namespace Store
         public OrderItem Add(int detailId, decimal price, int count)
         {
             if (TryGet(detailId, out OrderItem orderItem))
-                throw new InvalidOperationException("Detail already exists");
+                throw new InvalidOperationException("Detail already exists.");
+            var orderItemDTO = OrderItem.DtoFactory.Create(orderDTO, detailId, price, count);
+            orderDTO.Items.Add(orderItemDTO);
 
-            orderItem = new OrderItem(detailId, price, count);
+            orderItem = OrderItem.Mapper.Map(orderItemDTO);
             items.Add(orderItem);
 
             return orderItem;
@@ -65,8 +75,12 @@ namespace Store
 
         public void Remove(int detailId)
         {
-            items.Remove(Get(detailId));
+            var index = items.FindIndex(item => item.DetailId == detailId);
+            if (index == -1)
+                throw new InvalidOperationException("Can't find book to remove from order.");
+
+            orderDTO.Items.RemoveAt(index);
+            items.RemoveAt(index);
         }
     }
-
 }
